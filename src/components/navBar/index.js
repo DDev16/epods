@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useContext } from 'react';
 import styled from 'styled-components';
 import { CSSTransitionGroup } from 'react-transition-group'; // ES6
 import {
@@ -6,15 +6,18 @@ import {
   AiFillCaretRight,
   AiFillPauseCircle,
 } from 'react-icons/ai';
-import { useRaf, useWindowSize } from 'rooks';
+import { useWindowSize } from 'rooks';
 // import logo from '../../components/navBar/DevD (4).gif';
 
 import theme from '~/src/theme';
 import NavModal from './NavModal';
-import useStore from '../../context/mainStore';
 import CONFIG from '../../configs';
-import matrixGif from '../../components/navBar/stock_back_low.gif'; // Import the GIF file
-
+import matrixGif from '../../components/navBar/stock_back_low.gif'; 
+// import { Web3Context } from '../../web3/Web3Provider.js';
+// import {  FiSettings } from 'react-icons/fi';
+// import songbirdLogo from '../../assets/songbird-logo.png';
+// import flareLogo from '../../assets/flarelogo.png';
+import Swal from 'sweetalert2';
 
 const { navTitle } = CONFIG;
 
@@ -26,7 +29,7 @@ const MainContainer = styled.div`
   position: fixed;
   width: ${(props) => props.windowWidth - 0}px;
   margin-left: px;
-  height: 50px;
+  height: 80px;
   z-index: 1;
   border: 10px solid;
   border-image-slice: 1;
@@ -40,6 +43,12 @@ const MainContainer = styled.div`
   // background-image: url(${matrixGif}); /* Set the background image */
   background-size: fill; /* Adjust the image size to cover the container */
   background-repeat: repeat; /* Prevent the image from repeating */
+
+  @media (max-width: 768px) {
+    font-size: 15px;
+    
+   
+  }
 `;
 
 
@@ -91,7 +100,8 @@ const StyledDiv = styled.div`
   }
 
   @media (max-width: 768px) {
-    font-size: 20px;
+    font-size: 15px;
+    height: 30px
     background-color: rgba(255, 255, 255, 0.6); /* Keep the semi-transparent background */
     padding: 8px 16px;
     transform: none;
@@ -108,18 +118,197 @@ const LogoContainer = styled.div`
   transform: translateX(-50%);
 `;
 
-const LogoImage = styled.img`
-  height: 150px;
+// const LogoImage = styled.img`
+//   height: 150px;
+// `;
+
+
+// const NetworkSelect = styled.select`
+//   color: #ffffff;
+//   background-color: #252525;
+//   border: none;
+//   margin-right: 10px;
+//   padding: 10px;
+//   border-radius: 5px;
+//   font-size: 16px;
+//   outline: none;
+//   transition: background-color 0.3s ease;
+
+//   &:hover {
+//     background-color: #333333;
+//   }
+
+//   &:focus {
+//     background-color: #444444;
+//   }
+// `;
+
+// const DisconnectButton = styled.button`
+//   background: linear-gradient(135deg, blue, purple);
+//   color: #ffffff;
+//   border: none;
+//   padding: 10px 20px;
+//   border-radius: 5px;
+//   font-size: 16px;
+//   outline: none;
+//   cursor: pointer;
+//   transition: background-color 0.3s ease;
+
+//   &:hover {
+//     background: linear-gradient(135deg, purple, blue);
+//   }
+// `;
+
+const MintButton = styled.button`
+  background: linear-gradient(135deg, blue, purple);
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background: linear-gradient(135deg, purple, blue);
+  }
 `;
 
 
+
+// const AccountAddress = styled.span`
+//   color: #ffffff;
+//   margin-right: 10px;
+// `;
+
 const NavBar = () => {
+  // const { web3,contract } = useContext(Web3Context);
+  // const [currentNetworkId, setCurrentNetworkId] = useState('');
+  // const [selectedNetwork, setSelectedNetwork] = useState(null);
+  // const [account, setAccount] = useState('');
+  // const [isConnected, setIsConnected] = useState(false); // New state for connection status
+
   const [isOpen, setIsOpen] = useState(false);
   const { innerWidth } = useWindowSize();
   const [windowWidth, setWindowWidth] = useState(innerWidth);
   const [playAudio, setPlayingAudio] = useState(true);
   const audio = useRef();
+
+
   let userinteraction = 0;
+
+  // const handleMint = async () => {
+  //   if (!web3) {
+  //     console.log("Web3 is not available.");
+  //     return;
+  //   }
+
+  //   try {
+  //     const accounts = await web3.eth.getAccounts();
+  //     await contract.methods.mint(mintAmount).send({from: accounts[0]});
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
+
+
+  const handleMint = async () => {
+    const imageUrl = `https://source.unsplash.com/1600x900/?psychedelic?${Date.now()}`;
+
+    Swal.fire({
+      title: 'Congratulations!',
+      text: 'Your NFT has been minted successfully.',
+      imageUrl: imageUrl,
+      imageWidth: 400,
+      imageHeight: 200,
+      imageAlt: 'Custom image',
+      timer: 5000,  // 5 seconds timer, auto-closes after this time.
+      timerProgressBar: true,
+      backdrop: `
+        rgba(0,0,123,0.4)
+        url("https://sweetalert2.github.io/images/nyan-cat.gif")
+        left top
+        no-repeat
+      `,
+    });
+  };
+
+
+  // const handleNetworkChange = async (e) => {
+  //   const networkId = parseInt(e.target.value, 10);
+  //   if (web3 && web3.currentProvider.isMetaMask) {
+  //     try {
+  //       await window.ethereum.request({
+  //         method: 'wallet_switchEthereumChain',
+  //         params: [{ chainId: `0x${networkId.toString(16)}` }],
+  //       });
+  //       if (networkId === 19) {
+  //         setSelectedNetwork(songbirdLogo);
+  //       } else if (networkId === 14) {
+  //         setSelectedNetwork(flareLogo);
+  //       } else if (networkId === 31337) {
+  //         setSelectedNetwork(null);
+  //       }
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   }
+  // };
+  
+
+  // const handleConnectionToggle = async () => {
+  //   if (web3 && web3.currentProvider.isMetaMask) {
+  //     try {
+  //       if (isConnected) {
+          
+  //          // Connect to the network
+  //          await window.ethereum.request({
+  //           method: 'eth_requestAccounts',
+  //         });
+  //         setIsConnected(false);
+  //       } else {
+         
+  //         // Disconnect from the network
+  //         await window.ethereum.request({
+  //           method: 'wallet_requestPermissions',
+  //           params: [{ eth_accounts: {} }],
+  //         });
+  //         setIsConnected(true);
+  //       }
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   }
+  // };
+  
+
+  // useEffect(() => {
+  //   const getCurrentNetworkId = async () => {
+  //     if (web3 && web3.currentProvider.isMetaMask) {
+  //       try {
+  //         const networkId = await web3.eth.net.getId();
+  //         setCurrentNetworkId(networkId.toString());
+  //         if (networkId === 19) {
+  //           setSelectedNetwork(songbirdLogo);
+  //         } else if (networkId === 14) {
+  //           setSelectedNetwork(flareLogo);
+  //         } else if (networkId === 31337) {
+  //           setSelectedNetwork(null);
+  //         }
+
+  //         const accounts = await web3.eth.getAccounts();
+  //         setAccount(accounts[0]);
+  //       } catch (error) {
+  //         console.error(error);
+  //       }
+  //     }
+  //   };
+
+  //   getCurrentNetworkId();
+  // }, [web3]);
+
+
 
   useEffect(() => {
     if (!audio.current) {
@@ -169,6 +358,23 @@ const NavBar = () => {
             <AiFillPauseCircle color={theme.colors.primary} size={30} />
           )}
         </PlayButton>
+        <MintButton onClick={handleMint}>Mint</MintButton>
+
+    
+{/* 
+<DisconnectButton type="button" onClick={handleConnectionToggle}>
+  {isConnected ? 'Disconnect' : 'Connect'}
+</DisconnectButton> */}
+
+{/* <div>
+        <NetworkSelect value={currentNetworkId} onChange={handleNetworkChange}>
+          <option value="14">Flare</option>
+          <option value="19">Songbird</option>
+          <option value="31337">Localhost</option>
+        </NetworkSelect>
+        {selectedNetwork && <LogoImage src={selectedNetwork} alt="Network logo" />}
+      </div>  
+{isConnected && <AccountAddress>{account}</AccountAddress>} */}
         <StyledDiv>{navTitle}</StyledDiv>
         <LogoContainer>
           {/* <LogoImage src={logo} alt="Logo" /> */}
